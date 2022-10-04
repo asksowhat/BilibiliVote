@@ -16,6 +16,11 @@
 
     window.onload = main;
     async function main() {
+        //在此时间段不运行
+        if (await checkAuditTime("01:00", "7:00")){
+            window.location.href="https://www.bilibili.com/judgement/index";
+            return;
+        }
         setTimeout(await enterVotePage, 3000);
         setTimeout(await optionsVote, 10000 + Math.round(Math.random()*10)*1000);
         setTimeout(await submitVote, 30000 + Math.round(Math.random()*10)*1000);
@@ -29,7 +34,7 @@
             if (buttons[i].innerText == "开始众议") {
                 buttons[i].click();
                 break;
-            } else if (buttons[i].innerText == "暂无") {
+            } else if (buttons[i].innerText == "当前无众议案件") {
                 await reload();
             }
         }
@@ -48,9 +53,9 @@
             //类型
 
             GM_log("num:"+option_num_feel);
-            if ((buttonName == "好" || buttonName == "合适") && (option_num_feel == 1 || option_num_feel == 2 || option_num_feel == 4)) {
+            if ((buttonName == "好" || buttonName == "合适") && (option_num_feel == 1 || option_num_feel == 2 || option_num_feel%3 == 0)) {
                 buttons[i].click();
-            } else if ((buttonName == "普通" || buttonName == "中" || buttonName == "一般") && option_num_feel%3 == 0) {
+            } else if ((buttonName == "普通" || buttonName == "中" || buttonName == "一般") && option_num_feel == 4) {
                 buttons[i].click();
             } else if ((buttonName == "差" || buttonName == "不合适") && option_num_feel == 8) {
                 buttons[i].click();
@@ -68,8 +73,10 @@
         }
         //匿名提交
         var divs = document.getElementsByClassName("v-check-box__label");
-        if (divs.length > 0) {
+        if (divs.length == 1 && divs[0].classList.length == 1) {
+            GM_log(divs);
             divs[0].click();
+            GM_log(divs);
         }
 
     }
@@ -97,18 +104,30 @@
         var buttons = document.getElementsByTagName("button");
         for (let i=0; i < buttons.length; i++) {
             if (buttons[i].innerText == "投票次数已用完，返回") {
-                open(location, '_self').close();
+                window.location.href="https://www.bilibili.com/judgement/index";
             } else if (buttons[i].innerText == "投票次数已用完") {
-                open(location, '_self').close();
+                window.location.href="https://www.bilibili.com/judgement/index";
             }
-        }
-
-        var ps = document.getElementsByClassName("common-title");
-        if (ps.length == 1){
-            open(location, '_self').close();
         }
     }
 
-    setInterval(main,750000 + Math.round(Math.random()*10)*3000);
+    function checkAuditTime(beginTime, endTime) {
+        var nowDate = new Date();
+        var beginDate = new Date(nowDate);
+        var endDate = new Date(nowDate);
+
+        var beginIndex = beginTime.lastIndexOf("\:");
+        var beginHour = beginTime.substring(0, beginIndex);
+        var beginMinue = beginTime.substring(beginIndex + 1, beginTime.length);
+        beginDate.setHours(beginHour, beginMinue, 0, 0);
+
+        var endIndex = endTime.lastIndexOf("\:");
+        var endHour = endTime.substring(0, endIndex);
+        var endMinue = endTime.substring(endIndex + 1, endTime.length);
+        endDate.setHours(endHour, endMinue, 0, 0);
+        return nowDate.getTime() - beginDate.getTime() >= 0 && nowDate.getTime() <= endDate.getTime();
+    }
+
+    setInterval(main,90000 + Math.round(Math.random()*100)*3000);
     // Your code here...
 })();

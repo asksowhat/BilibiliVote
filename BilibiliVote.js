@@ -3,6 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  b站风纪委员投票助手
+// @license MIT
 // @author       asksowhat
 // @icon         https://www.bilibili.com/favicon.ico
 // @match        https://www.bilibili.com

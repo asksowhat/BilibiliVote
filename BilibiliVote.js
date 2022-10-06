@@ -35,7 +35,7 @@
             if (buttons[i].innerText == "开始众议") {
                 buttons[i].click();
                 break;
-            } else if (buttons[i].innerText == "当前无众议案件") {
+            } else if (buttons[i].innerText == "无新任务") {
                 await reload();
             }
         }
